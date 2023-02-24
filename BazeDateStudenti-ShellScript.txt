@@ -1,0 +1,164 @@
+#!/bin/bash
+
+IntroducereStudent()
+{
+echo "Introduceti urmatoarele date aferente studentului pe care doriti sa il introduceti:"
+alegere=true
+i=1
+while $alegere
+do
+	echo "Nr. matricol: $i" >> Student$i.txt
+	echo "Numele: "
+	read nume
+	echo "Nume: $nume" >> Student$i.txt
+	echo "Prenumele: "
+	read prenume
+	echo "Prenume: $prenume" >> Student$i.txt
+	echo "Notele (10 discipline): "
+	suma=0
+	until [ "$suma" -ge "10" ]
+	do
+		echo "Nota[1]= "
+		read nota1
+		suma=`expr $suma + $nota1`
+		echo "Nota[2]= "
+		read nota2
+		suma=`expr $suma + $nota2`
+		echo "Nota[3]= "
+		read nota3
+		suma=`expr $suma + $nota3`
+		echo "Nota[4]= "
+                read nota4
+                suma=`expr $suma + $nota4`
+		echo "Nota[5]= "
+                read nota5
+                suma=`expr $suma + $nota5`
+		echo "Nota[6]= "
+                read nota6
+                suma=`expr $suma + $nota6`
+		echo "Nota[7]= "
+                read nota7
+                suma=`expr $suma + $nota7`
+		echo "Nota[8]= "
+                read nota8
+                suma=`expr $suma + $nota8`
+		echo "Nota[9]= "
+                read nota9
+                suma=`expr $suma + $nota9`
+		echo "Nota[10]= "
+                read nota10
+                suma=`expr $suma + $nota10`
+	done
+	note=($nota1 $nota2 $nota3 $nota4 $nota5 $nota6 $nota7 $nota8 $nota9 $nota10)
+	echo "Note: ${note[*]}" >> Student$i.txt
+	medie=`expr $suma / 10`
+	if [ $medie -gt 5 ]
+	then
+		echo "Medie: $medie" >> Student$i.txt
+		echo "Status: Absolvent/a" >> Student$i.txt
+	else
+		echo "Medie: $medie" >> Student$i.txt
+		echo "Status: Corigent/a" >> Student$i.txt
+	fi
+	echo "Studentul a fost introdus cu succes!"
+	echo "Doriti sa mai introduceti si alti studenti? (Y/N) "
+	read raspuns
+	if [ "$raspuns" = "Y" ]
+	then
+		alegere=true
+		i=`expr $i + 1`
+		echo -e "\n"
+	else
+		alegere=false
+	fi 
+done
+}
+
+EliminareStudent()
+{
+alegere=true
+while $alegere
+do
+	echo "Introduceti nr. matricol aferent studentului pe care doriti sa il eliminati: "
+	read i
+	rm -i Student"$i".txt
+	echo "Studentul a fost eliminat cu succes!"
+	echo "Doriti sa mai eliminati si alti studenti? (Y/N) "
+	read raspuns
+	if [ "$raspuns" = "Y" ]
+	then
+		alegere=true
+		echo -e "\n"
+	else
+		alegere=false
+	fi
+done 
+}
+
+AfisareStudent()
+{
+alegere=true
+while $alegere
+do
+	echo "Introduceti nr. matricol aferent studentului pe care doriti sa il afisati: "
+	read i
+	cat Student$i.txt
+	echo "Doriti sa mai afisati si alti studenti? (Y/N) "
+	read raspuns
+	if [ "$raspuns" = "Y" ]
+	then
+		alegere=true
+		echo -e "\n"
+	else
+		alegere=false
+	fi
+done 
+}
+
+
+ArhivareANDCriptare()
+{
+tar cvf ArhivaStudenti.tar *.txt
+echo "Arhiva a fost creata cu succes!"
+mcrypt ArhivaStudenti.tar
+echo "Criptarea arhivei s-a realizat cu succes!"
+}
+
+echo "Bun venit! Aveti urmatoarele functii disponibile de executat, afisate in meniul de mai jos: "
+PS3="Introduceti un nr. intre 1 si 3 pt. a selecta una dintre functii: "
+select optiune in IntroducereStudent EliminareStudent ArhivareANDCriptare AfisareStudent 
+do
+	if [ -n "$optiune" ]
+	then
+		if [ "$optiune" = "IntroducereStudent" ]
+		then
+			echo -e "\n"
+			IntroducereStudent
+			echo -e "\n"
+		else
+			if [ "$optiune" = "EliminareStudent" ]
+			then
+				echo -e "\n"
+				EliminareStudent
+				echo -e "\n"
+			else
+				if [ "$optiune" = "ArhivareANDCriptare" ]
+				then
+					echo -e "\n"
+					ArhivareANDCriptare
+					echo -e "\n"
+				else
+					if [ "$optiune" = "AfisareStudent" ]
+					then
+						echo -e "\n"
+						AfisareStudent
+						echo -e "\n"
+					fi
+				fi
+			fi
+		fi
+	else
+		exit
+	fi
+	echo -e "1) IntroducereStudent\n2) EliminareStudent\n3) ArhivareANDCriptare\n4) AfisareStudent"
+done
